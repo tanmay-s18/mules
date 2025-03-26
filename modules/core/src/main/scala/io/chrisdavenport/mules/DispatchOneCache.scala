@@ -27,7 +27,7 @@ import cats.implicits._
 
 import scala.collection.immutable.Map
 import cats.effect.std.MapRef
-import cats.effect.std.MapRef.fromSeqRefs
+import cats.data.NonEmptySeq
 
 import java.util.concurrent.ConcurrentHashMap
 import scala.collection.mutable
@@ -426,7 +426,8 @@ private[mules] object PurgeableMapRef {
 
     shards.map { s =>
       PurgeableMapRef(
-        fromSeqRefs(s),
+        if (s.nonEmpty) MapRef.fromNonEmptySeqRefs(NonEmptySeq.fromSeqUnsafe(s))
+        else throw new IllegalStateException("Shards list is unexpectedly empty"),
         purgeExpiredEntries(s)
       )
     }
