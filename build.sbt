@@ -19,7 +19,7 @@ ThisBuild / versionScheme := Some("early-semver")
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("11"))
 
 val catsV = "2.11.0"
-val catsEffectV = "3.5.7"
+val catsEffectV = "3.6.0"
 val catsCollectionV = "0.9.9"
 
 val munitV = "1.0.0"
@@ -57,7 +57,7 @@ lazy val caffeine = project
   .settings(
     name := "mules-caffeine",
     libraryDependencies ++= Seq(
-      "com.github.ben-manes.caffeine" % "caffeine" % "3.1.6"
+      "com.github.ben-manes.caffeine" % "caffeine" % "3.2.0"
     )
   )
   .settings(testDeps)
@@ -95,7 +95,7 @@ lazy val testDeps = Seq(
   libraryDependencies ++= Seq(
     "org.typelevel" %%% "cats-effect-laws"  % catsEffectV % Test,
     "org.scalameta" %%% "munit"             % munitV      % Test,
-    "org.scalameta" %%% "munit-scalacheck"  % "1.0.0-M7"  % Test,
+    "org.scalameta" %%% "munit-scalacheck"  % "1.0.0-M11" % Test,
     "org.typelevel" %%% "munit-cats-effect" % munitCEV    % Test
   )
 )
