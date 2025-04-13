@@ -427,7 +427,12 @@ private[mules] object PurgeableMapRef {
     shards.flatMap { s =>
       NonEmptySeq.fromSeq(s) match {
         case Some(nonEmptyShards) =>
-          Concurrent[F].pure(PurgeableMapRef(MapRef.fromNonEmptySeqRefs(nonEmptyShards), purgeExpiredEntries(nonEmptyShards.toList)))
+          Concurrent[F].pure(
+            PurgeableMapRef(
+              MapRef.fromNonEmptySeqRefs(nonEmptyShards),
+              purgeExpiredEntries(nonEmptyShards.toList)
+            )
+          )
         case None =>
           Concurrent[F].raiseError(
             new IllegalArgumentException("shards must be non-empty")
