@@ -424,12 +424,15 @@ private[mules] object PurgeableMapRef {
     def purgeExpiredEntries(shards: List[Ref[F, Map[K, V]]])(now: Long) =
       shards.parFlatTraverse(SingleRef.purgeExpiredEntries(_, isExpired)(now))
 
-    shards.map { s =>
-      PurgeableMapRef(
-        if (s.nonEmpty) MapRef.fromNonEmptySeqRefs(NonEmptySeq.fromSeqUnsafe(s))
-        else throw new IllegalStateException("Shards list is unexpectedly empty"),
-        purgeExpiredEntries(s)
-      )
+    shards.flatMap { s =>
+      NonEmptySeq.fromSeq(s) match {
+        case Some(nonEmptyShards) =>
+          Concurrent[F].pure(PurgeableMapRef(MapRef.fromNonEmptySeqRefs(nonEmptyShards), purgeExpiredEntries(nonEmptyShards.toList)))
+        case None =>
+          Concurrent[F].raiseError(
+            new IllegalArgumentException("shards must be non-empty")
+          )
+      }
     }
   }
 
